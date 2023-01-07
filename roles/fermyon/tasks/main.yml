@@ -68,10 +68,10 @@
         owner: fermyon
     - name: Ensuring that fermyon is able to use sudo without password
       lineinfile:
-      path: /etc/sudoers
-      regexp: '^%fermyon'
-      line: '%fermyon ALL=(ALL) NOPASSWD: ALL'
-      validate: 'visudo -cf %s'
+        path: /etc/sudoers
+        regexp: '^%fermyon'
+        line: '%fermyon ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
     - name:  Git checkout
       ansible.builtin.git:
         #repo: 'https://github.com/fermyon/installer.git'
