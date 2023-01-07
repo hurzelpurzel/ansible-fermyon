@@ -5,12 +5,12 @@
 - name: Add Hashicorp repo
   block:
     - name: Hashicorp |no apt key
-      ansible.builtin.get_url:
+      ansible.builtin.apt_key:
         url: https://apt.releases.hashicorp.com/gpg
-        dest: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        state: present
     - name: Hashicorp | apt source
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
         state: present
 # Install nomad
 - name: Update repositories cache and install "nomad" package
