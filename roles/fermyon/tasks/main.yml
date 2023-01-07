@@ -83,6 +83,6 @@
     - name: Fermyon | Create Unit file
       template: src=fermyon.service.j2 dest=/lib/systemd/system/fermyon.service mode=644
       notify:
-        - reload systemctl
+        - fermyon.restart
     - name: Fermyon | Start Fermyon
       service: name=fermyon.service state=started enabled=yes

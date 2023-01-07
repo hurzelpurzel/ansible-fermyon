@@ -1,7 +1,8 @@
 ---
 # handlers file for fermyon
 
-- name: fermyon | Restart fermyon
+- name: fermyon.restart
   ansible.builtin.service:
     name: fermyon
+    daemon_reload: yes
     state: restarted
