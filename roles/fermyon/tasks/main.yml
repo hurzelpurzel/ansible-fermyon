@@ -54,10 +54,15 @@
 # Checkout installer
 - name: Prepare fermyon
   block:
+    - name: Ensure group "admin" exists
+      ansible.builtin.group:
+        name: admin
+        state: present
     - name: Add the user 'fermyon' with a specific uid and a primary group of 'admin'
       ansible.builtin.user:
         name: fermyon
         comment: fermyon
+        group: admin
         system: true
         home: "{{ fermyon_installation }}"
     - name: Create a directory if it does not exist
@@ -66,11 +71,11 @@
         state: directory
         mode: '0755'
         owner: fermyon
-    - name: Ensuring that fermyon is able to use sudo without password
+    - name: Ensuring that admin group is able to use sudo without password
       lineinfile:
         path: /etc/sudoers
-        regexp: '^%fermyon'
-        line: '%fermyon ALL=(ALL) NOPASSWD: ALL'
+        regexp: '^%admin'
+        line: '%admin ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
     - name:  Git checkout
       ansible.builtin.git:
