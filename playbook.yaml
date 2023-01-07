@@ -1,6 +1,6 @@
 ---
-hosts: localhost
-become_user: root
+- hosts: localhost
+  become_user: root
 
-roles:
-  - fermyon
+  roles:
+   - fermyon
