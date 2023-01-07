@@ -4,9 +4,9 @@ Requires=network.target
 After=syslog.target network.target
 [Service]
 Type=forking
-ExecStart={{fermyon_installation}/local/start.sh
+ExecStart={{fermyon_installation}/installer/local/start.sh
 User=fermyon
-EnvironmentFile=/etc/sysconfig/fermyon
+EnvironmentFile={{ fermyon_installation }}/fermyon.conf
 PIDFile={{fermyon_installation}}/fermyon.pid
 Environment="FERMYON_PID_FILE_PATH={{fermyon_installation}}/fermyon.pid"
 [Install]

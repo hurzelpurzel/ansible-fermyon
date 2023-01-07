@@ -79,7 +79,7 @@
         mode: '0744'
     # create as service
     - name: Fermyon | Create environment file
-      template: src=fermyon.env.j2 dest=/etc/sysconfig/fermyon
+      template: src=fermyon.env.j2 dest={{ fermyon_installation }}/fermyon.conf
     - name: Fermyon | Create Unit file
       template: src=fermyon.service.j2 dest=/lib/systemd/system/fermyon.service mode=644
       notify:
