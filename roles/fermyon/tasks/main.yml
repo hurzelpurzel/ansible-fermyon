@@ -73,6 +73,7 @@
         line: '%fermyon ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
     - name:  Git checkout
+      become_user: fermyon
       ansible.builtin.git:
         #repo: 'https://github.com/fermyon/installer.git'
         repo: https://github.com/hurzelpurzel/installer.git
