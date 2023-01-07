@@ -58,8 +58,6 @@
       ansible.builtin.user:
         name: fermyon
         comment: fermyon
-        groups: 
-          - root
         system: true
         home: "{{ fermyon_installation }}"
     - name: Create a directory if it does not exist
