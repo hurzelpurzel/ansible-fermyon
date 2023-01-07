@@ -1,4 +1,4 @@
 ---
 # defaults file for fermyon
-fermyon_installation=/opt/fermyon
-hippo_url="http://{{ ansible_default_ipv4.address"}}.nip.io"
+fermyon_installation: /opt/fermyon
+hippo_url: "http://{{ ansible_default_ipv4.address}}.nip.io"

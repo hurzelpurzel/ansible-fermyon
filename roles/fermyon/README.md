@@ -21,7 +21,7 @@ Role Variables
 | Variable     | Content     | default |
 |--------------|-----------|------------|
 | fermyon_installation | Installation  Path    | /opt/fermyon       |
-| hippo_url      | External url  | http://{{ ansible_default_ipv4.address"}}.nip.io       |
+| hippo_url      | External url  | http://{{ ansible_default_ipv4.address}}.nip.io       |
 
 
 
