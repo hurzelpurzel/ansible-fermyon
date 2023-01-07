@@ -36,15 +36,16 @@
         - build-essential 
         - libssl-dev 
         - pkg-config
-    - name: Donwload
+    - name: Donwload Spin
       ansible.builtin.get_url:
         url: https://developer.fermyon.com/downloads/install.sh
         dest: /tmp/
+        mode: "744"
     - name: Execute Installer
       ansible.builtin.shell: install.sh
       args:
         chdir: /tmp/
-    - name: Execute Installer
+    - name: mv spin
       ansible.builtin.shell: 
         cmd: mv spin /usr/local/bin/
         chdir: /tmp/
@@ -71,6 +72,12 @@
         repo: https://github.com/hurzelpurzel/installer.git
         dest: "{{ fermyon_installation }}"
         version: main
+    - name: Change file ownership, group and permissions
+      ansible.builtin.file:
+        path: "{{ fermyon_installation }}/local/start.sh"
+        owner: fermyon
+        group: fermyon
+        mode: '0744'
     # create as service
     - name: Fermyon | Create environment file
       template: src=fermyon.env.j2 dest=/etc/sysconfig/fermyon
