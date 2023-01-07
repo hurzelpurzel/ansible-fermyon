@@ -44,11 +44,12 @@
         mode: "744"
     - name: Execute Installer
       ansible.builtin.shell: /tmp/install.sh
-
+      args:
+        chdir: /tmp/
     - name: mv spin
       ansible.builtin.shell: 
-        cmd: mv  /tmp/spin /usr/local/bin/
- 
+        cmd: mv /tmp/spin /usr/local/bin/
+        chdir: /tmp/
 
 # Checkout installer
 - name: Prepare fermyon
