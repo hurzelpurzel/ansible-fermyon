@@ -1,0 +1,84 @@
+---
+# tasks file for fermyon
+
+# Add Hashicorp repo
+- name: Add Hashicorp repo
+  block:
+    - name: Hashicorp |no apt key
+      ansible.builtin.get_url:
+        url: https://apt.releases.hashicorp.com/gpg
+        dest: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    - name: Hashicorp | apt source
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        state: present
+# Install nomad
+- name: Update repositories cache and install "nomad" package
+  ansible.builtin.apt:
+    name: nomad
+    update_cache: yes
+# Install consul
+- name: Update repositories cache and install "consul" package
+  ansible.builtin.apt:
+    name: consul
+    update_cache: yes
+# Install git
+- name: Update repositories cache and install "git" package
+  ansible.builtin.apt:
+    name: git
+    update_cache: yes
+# Install spin
+- name: Install spin
+  block:
+    - name: Install a list of packages
+      ansible.builtin.apt:
+        pkg:
+        - build-essential 
+        - libssl-dev 
+        - pkg-config
+    - name: Donwload
+      ansible.builtin.get_url:
+        url: https://developer.fermyon.com/downloads/install.sh
+        dest: /tmp/
+    - name: Execute Installer
+      ansible.builtin.shell: install.sh
+      args:
+        chdir: /tmp/
+    - name: Execute Installer
+      ansible.builtin.shell: 
+        cmd: mv spin /usr/local/bin/
+        chdir: /tmp/
+
+# Checkout installer
+- name: Prepare fermyon
+  block:
+    - name: Add the user 'fermyon' with a specific uid and a primary group of 'admin'
+      ansible.builtin.user:
+        name: fermyon
+        comment: fermyon
+        group: admin
+        system: true
+        home: {{ fermyon_installation }}
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: {{ fermyon_installation }}
+        state: directory
+        mode: '0755'
+        owner: fermyon
+    - name:  Git checkout
+      ansible.builtin.git:
+        repo: 'https://github.com/fermyon/installer.git'
+        dest: {{ fermyon_installation }}
+        version: main
+    - name: Ensure Hippo Url is present in /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        insertafter: '^127.0.0.1	localhost'
+        line: "127.0.0.1  hippo.local.fermyon.link"
+    # create as service
+    - name: Fermyon | Create Unit file
+      template: src=fermyon.service.j2 dest=/lib/systemd/system/fermyon.service mode=644
+      notify:
+        - reload systemctl
+    - name: Fermyon | Start Fermyon
+      service: name=fermyon.service state=started enabled=yes
