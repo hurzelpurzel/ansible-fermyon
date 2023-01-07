@@ -4,7 +4,7 @@
 # Add Hashicorp repo
 - name: Add Hashicorp repo
   block:
-    - name: Hashicorp |no apt key
+    - name: Hashicorp |add apt key
       ansible.builtin.apt_key:
         url: https://apt.releases.hashicorp.com/gpg
         state: present
@@ -43,13 +43,12 @@
         dest: /tmp/
         mode: "744"
     - name: Execute Installer
-      ansible.builtin.shell: install.sh
-      args:
-        chdir: /tmp/
+      ansible.builtin.shell: /tmp/install.sh
+
     - name: mv spin
       ansible.builtin.shell: 
-        cmd: mv spin /usr/local/bin/
-        chdir: /tmp/
+        cmd: mv  /tmp/spin /usr/local/bin/
+ 
 
 # Checkout installer
 - name: Prepare fermyon
