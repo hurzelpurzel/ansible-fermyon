@@ -10,7 +10,7 @@
         dest: /usr/share/keyrings/hashicorp-archive-keyring.gpg
     - name: Hashicorp | apt source
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
         state: present
 # Install nomad
 - name: Update repositories cache and install "nomad" package
