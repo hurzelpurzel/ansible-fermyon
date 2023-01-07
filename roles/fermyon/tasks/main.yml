@@ -73,16 +73,20 @@
         line: '%fermyon ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
     - name:  Git checkout
-      become_user: fermyon
       ansible.builtin.git:
         #repo: 'https://github.com/fermyon/installer.git'
         repo: https://github.com/hurzelpurzel/installer.git
         dest: "{{ fermyon_installation }}/installer"
         version: main
-    - name: Change file ownership, group and permissions
+    - name: Change directory ownership
+      ansible.builtin.file:
+        path: "{{ fermyon_installation }}/installer"
+        owner: fermyon
+        recurse: true
+        state: directory
+    - name: Make file exeutable
       ansible.builtin.file:
         path: "{{ fermyon_installation }}/installer/local/start.sh"
-        owner: fermyon
         mode: '0744'
     # create as service
     - name: Fermyon | Create environment file
