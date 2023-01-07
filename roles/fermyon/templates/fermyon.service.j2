@@ -6,6 +6,7 @@ After=syslog.target network.target
 Type=forking
 ExecStart={{fermyon_installation}/local/start.sh
 User=fermyon
+EnvironmentFile=/etc/sysconfig/fermyon
 PIDFile={{fermyon_installation}}/fermyon.pid
 Environment="FERMYON_PID_FILE_PATH={{fermyon_installation}}/fermyon.pid"
 [Install]

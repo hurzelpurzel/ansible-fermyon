@@ -17,7 +17,13 @@ Debian OS
 Role Variables
 --------------
 
-fermyon_installation=/opt/fermyon
+
+| Variable     | Content     | default |
+|--------------|-----------|------------|
+| fermyon_installation | Installation  Path    | /opt/fermyon       |
+| hippo_url      | External url  | http://{{ ansible_default_ipv4.address"}}.nip.io       |
+
+
 
 Dependencies
 ------------

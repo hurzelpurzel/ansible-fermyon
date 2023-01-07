@@ -67,15 +67,13 @@
         owner: fermyon
     - name:  Git checkout
       ansible.builtin.git:
-        repo: 'https://github.com/fermyon/installer.git'
+        #repo: 'https://github.com/fermyon/installer.git'
+        repo: https://github.com/hurzelpurzel/installer.git
         dest: {{ fermyon_installation }}
         version: main
-    - name: Ensure Hippo Url is present in /etc/hosts
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        insertafter: '^127.0.0.1	localhost'
-        line: "127.0.0.1  hippo.local.fermyon.link"
     # create as service
+    - name: Fermyon | Create environment file
+      template: src=fermyon.env.j2 dest=/etc/sysconfig/fermyon
     - name: Fermyon | Create Unit file
       template: src=fermyon.service.j2 dest=/lib/systemd/system/fermyon.service mode=644
       notify:
