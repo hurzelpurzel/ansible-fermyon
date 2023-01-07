@@ -70,11 +70,11 @@
       ansible.builtin.git:
         #repo: 'https://github.com/fermyon/installer.git'
         repo: https://github.com/hurzelpurzel/installer.git
-        dest: "{{ fermyon_installation }}"
+        dest: "{{ fermyon_installation }}/installer"
         version: main
     - name: Change file ownership, group and permissions
       ansible.builtin.file:
-        path: "{{ fermyon_installation }}/local/start.sh"
+        path: "{{ fermyon_installation }}/installer/local/start.sh"
         owner: fermyon
         mode: '0744'
     # create as service
