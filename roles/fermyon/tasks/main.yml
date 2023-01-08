@@ -1,56 +1,6 @@
 ---
 # tasks file for fermyon
 
-# Add Hashicorp repo
-- name: Add Hashicorp repo
-  block:
-    - name: Hashicorp |add apt key
-      ansible.builtin.apt_key:
-        url: https://apt.releases.hashicorp.com/gpg
-        state: present
-    - name: Hashicorp | apt source
-      ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
-        state: present
-# Install nomad
-- name: Update repositories cache and install "nomad" package
-  ansible.builtin.apt:
-    name: nomad
-    update_cache: yes
-# Install consul
-- name: Update repositories cache and install "consul" package
-  ansible.builtin.apt:
-    name: consul
-    update_cache: yes
-# Install git
-- name: Update repositories cache and install "git" package
-  ansible.builtin.apt:
-    name: git
-    update_cache: yes
-# Install spin
-- name: Install spin
-  block:
-    - name: Install a list of packages
-      ansible.builtin.apt:
-        pkg:
-        - build-essential 
-        - libssl-dev 
-        - pkg-config
-        - curl
-    - name: Donwload Spin
-      ansible.builtin.get_url:
-        url: https://developer.fermyon.com/downloads/install.sh
-        dest: /tmp/
-        mode: "744"
-    - name: Execute Installer
-      ansible.builtin.shell: /tmp/install.sh
-      args:
-        chdir: /tmp/
-    - name: mv spin
-      ansible.builtin.shell: 
-        cmd: mv /tmp/spin /usr/local/bin/
-        chdir: /tmp/
-
 # Checkout installer
 - name: Prepare fermyon
   block:
@@ -82,25 +32,21 @@
         regexp: '^%admin'
         line: '%admin ALL=(ALL) NOPASSWD: ALL'
         validate: 'visudo -cf %s'
-    - name:  Git checkout
-      ansible.builtin.git:
-        repo: 'https://github.com/fermyon/installer.git'
-        #repo: https://github.com/hurzelpurzel/installer.git
-        dest: "{{ fermyon_installation }}/installer"
-        version: main
     - name: Change directory ownership
       ansible.builtin.file:
-        path: "{{ fermyon_installation }}/installer"
+        path: "{{ fermyon_installation }}"
         owner: fermyon
         recurse: true
         state: directory
+    - name: consul | Create start file
+      template: "src=start.sh.j2 dest={{ fermyon_installation }}/start.sh"
     - name: Make file exeutable
       ansible.builtin.file:
         path: "{{ fermyon_installation }}/installer/local/start.sh"
         mode: '0744'
     # create as service
     - name: Fermyon | Create environment file
-      template: src=fermyon.env.j2 dest={{ fermyon_installation }}/fermyon.conf
+      template: "src=fermyon.env.j2 dest={{ fermyon_installation }}/fermyon.conf"
     - name: Fermyon | Create Unit file
       template: src=fermyon.service.j2 dest=/lib/systemd/system/fermyon.service mode=644
       notify:

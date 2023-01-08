@@ -1,2 +1,60 @@
 ---
 # tasks file for nomad
+# Add Hashicorp repo
+- name: Add Hashicorp repo
+  block:
+    - name: Hashicorp |add apt key
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+    - name: Hashicorp | apt source
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        state: present
+# Install nomad
+- name: Update repositories cache and install "nomad" package
+  ansible.builtin.apt:
+    name: nomad
+    update_cache: yes
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+        path: "{{ nomad_home }}"
+        state: directory
+        mode: '0755'
+        owner: nomad
+- name: Change directory ownership
+  ansible.builtin.file:
+        path: "{{ nomad_home }}/"
+        owner: nomad
+        recurse: true
+        state: directory
+
+- name: Create etc dir
+  ansible.builtin.file:
+        path: "{{ nomad_home }}/etc"
+        owner: nomad
+        recurse: true
+        state: directory
+- name: Create etc dir
+  ansible.builtin.file:
+        path: "{{ nomad_home }}/data"
+        owner: nomad
+        recurse: true
+        state: directory
+- name: nomad | Create config file
+  template: "src=nomad.hcl.j2 dest={{ nomad_home }}/etc/nomad.hcl"
+- name: nomad | Create start file
+  template: "src=start.sh.j2 dest={{ nomad_home }}/start.sh"
+- name: Make file exeutable
+  ansible.builtin.file:
+        path: "{{ nomad_home }}/start.sh"
+        mode: '0744'
+# create as service
+- name: nomad | Create environment file
+  template: src=nomad.env.j2 dest={{ nomad_home }}/nomad.env
+- name: nomad | Create Unit file
+  template: src=nomad.service.j2 dest=/lib/systemd/system/nomad.service mode=644
+  notify:
+        - nomad.restart
+- name: nomad | Start Fermyon
+  service: name=nomad.service state=started enabled=yes

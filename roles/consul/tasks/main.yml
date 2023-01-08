@@ -1,2 +1,60 @@
 ---
 # tasks file for consul
+# Add Hashicorp repo
+- name: Add Hashicorp repo
+  block:
+    - name: Hashicorp |add apt key
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+    - name: Hashicorp | apt source
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        state: present
+# Install consul
+- name: Update repositories cache and install "consul" package
+  ansible.builtin.apt:
+    name: consul
+    update_cache: yes
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+        path: "{{ consul_home }}"
+        state: directory
+        mode: '0755'
+        owner: consul
+- name: Change directory ownership
+  ansible.builtin.file:
+        path: "{{ consul_home }}/"
+        owner: consul
+        recurse: true
+        state: directory
+
+- name: Create etc dir
+  ansible.builtin.file:
+        path: "{{ consul_home }}/etc"
+        owner: consul
+        recurse: true
+        state: directory
+- name: Create etc dir
+  ansible.builtin.file:
+        path: "{{ consul_home }}/data"
+        owner: consul
+        recurse: true
+        state: directory
+- name: consul | Create config file
+  template: "src=consul.hcl.j2 dest={{ consul_home }}/etc/consul.hcl"
+- name: consul | Create start file
+  template: "src=start.sh.j2 dest={{ consul_home }}/start.sh"
+- name: Make file exeutable
+  ansible.builtin.file:
+        path: "{{ consul_home }}/start.sh"
+        mode: '0744'
+# create as service
+- name: consul | Create environment file
+  template: src=consul.env.j2 dest={{ consul_home }}/consul.env
+- name: consul | Create Unit file
+  template: src=consul.service.j2 dest=/lib/systemd/system/consul.service mode=644
+  notify:
+        - consul.restart
+- name: consul | Start Fermyon
+  service: name=consul.service state=started enabled=yes

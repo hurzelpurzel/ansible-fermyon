@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Early exit for unsupported systems
+case "${OSTYPE}" in
+  linux-gnu* | darwin*)
+    ;; # Linux, MacOS, and WSL2 can proceed
+  msys | cygwin)
+    echo "The ${OSTYPE} environment is not yet supported for the Fermyon platform."
+    echo "But it will work within the Windows Subsystem for Linux."
+    echo "See https://docs.microsoft.com/en-us/windows/wsl/install for details."
+    exit 1
+    ;;
+  *)
+    echo "The ${OSTYPE} environment is not yet supported for the Fermyon platform."
+    exit 1
+    ;;
+esac
+
+require() {
+  if ! hash "$1" &>/dev/null; then
+    echo "'$1' not found in PATH"
+    exit 1
+  fi
+}
+
+require nomad
+
+# NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
+# https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
+# https://www.nomadproject.io/docs/drivers/exec#client-requirements
+case "$OSTYPE" in
+  linux*)
+    require sudo
+    SUDO="sudo --preserve-env=PATH"
+    ;;
+  *)
+    SUDO=
+    ;;
+esac
+
+cleanup() {
+  echo
+  echo "Shutting down services"
+  kill $(jobs -p)
+  wait
+}
+trap cleanup EXIT
+
+# change to the directory of this script
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+${SUDO} rm -rf {{nomad_home}}/data
+mkdir -p log
+
+echo "Starting nomad..."
+${SUDO} nomad agent -dev \
+  -config {{nomad_home}}/etc/nomad.hcl \
+  -data-dir "{{nomad_home}}/data/nomad" \
+  -consul-address "{{conusl_url}}" \
+  &>log/nomad.log &
+
+echo "Waiting for nomad..."
+while ! nomad server members 2>/dev/null | grep -q alive; do
+  sleep 2
+done
+
+
