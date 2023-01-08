@@ -8,8 +8,8 @@ Type=forking
 ExecStart={{consul_home}}/start.sh
 User=consul
 EnvironmentFile={{ consul_home }}/consul.env
-PIDFile={{consul_home}}/consul.pid
-Environment="CONSUL_PID_FILE_PATH={{consul_home}}/consul.pid"
+#PIDFile={{consul_home}}/consul.pid
+#Environment="CONSUL_PID_FILE_PATH={{consul_home}}/consul.pid"
 TimeoutSec=300
 
 [Install]

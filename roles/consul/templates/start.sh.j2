@@ -48,19 +48,19 @@ cleanup() {
 trap cleanup EXIT
 
 # change to the directory of this script
-cd "$(dirname "${BASH_SOURCE[0]}")"
+cd "{{consul_home}}"
 
-#${SUDO} rm -rf {{consul_home}}/data
-mkdir -p {{consul_home}}/log
+#${SUDO} rm -rf ./data
+mkdir -p ./log
 
 echo "Starting consul..."
 consul agent -dev \
-  -config-file {{consul_home}}/etc/consul.hcl \
+  -config-file ./etc/consul.hcl \
   -bootstrap-expect 1 \
-  &>{{consul_home}}/log/consul.log &
+  &>log/consul.log &
 
 echo "Waiting for consul..."
 while ! consul members &>/dev/null; do
-  sleep 2
+  sleep 10
 done
-
+wait
