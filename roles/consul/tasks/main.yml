@@ -58,8 +58,10 @@
 
 # create as service
 - name: consul | Create environment file
-  template: src=consul.env.j2 dest={{ consul_home }}/consul.env
-  owner: consul
+  aansible.builtin.template: 
+      src: consul.env.j2 
+      dest: "{{ consul_home }}/consul.env"
+      owner: consul
 - name: consul | Create Unit file
   template: src=consul.service.j2 dest=/lib/systemd/system/consul.service mode=644
   notify:
