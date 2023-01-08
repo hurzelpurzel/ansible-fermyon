@@ -59,6 +59,11 @@
         path: /etc/hosts
         insertafter: '^127.0.0.1	localhost'
         line: "127.0.0.1  hippo.local.fermyon.link"
+    - name: Ensure Bindle Url is present in /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        insertafter: '^127.0.0.1	localhost'
+        line: "127.0.0.1  bindle.local.fermyon.link"
     - name: Ensure group "admin" exists
       ansible.builtin.group:
         name: admin
@@ -85,7 +90,6 @@
     - name:  Git checkout
       ansible.builtin.git:
         repo: 'https://github.com/fermyon/installer.git'
-        #repo: https://github.com/hurzelpurzel/installer.git
         dest: "{{ fermyon_installation }}/installer"
         version: main
     - name: Change directory ownership
