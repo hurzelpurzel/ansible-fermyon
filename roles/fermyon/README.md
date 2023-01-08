@@ -12,7 +12,7 @@ Afterwards, the components comprising Fermyon are deployed in the form of Nomad 
 Requirements
 ------------
 
-Debian OS 
+Debian 11.06 OS 
 
 Role Variables
 --------------
@@ -21,7 +21,6 @@ Role Variables
 | Variable     | Content     | default |
 |--------------|-----------|------------|
 | fermyon_installation | Installation  Path    | /opt/fermyon       |
-| hippo_url      | External url  | http://{{ ansible_default_ipv4.address}}.nip.io       |
 
 
 
