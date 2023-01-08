@@ -7,7 +7,6 @@ After=syslog.target network.target
 Type=forking
 ExecStart={{consul_home}}/start.sh
 User=consul
-EnvironmentFile={{ consul_home }}/consul.env
 PIDFile=/run/consul/consul.pid
 TimeoutSec=300
 
