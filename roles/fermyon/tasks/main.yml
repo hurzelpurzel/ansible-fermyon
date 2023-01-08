@@ -98,12 +98,11 @@
       ansible.builtin.file:
         path: "{{ fermyon_installation }}/installer/local/start.sh"
         mode: '0744'
-    # create as service
-    - name: Fermyon | Create environment file
-      template: src=fermyon.env.j2 dest={{ fermyon_installation }}/fermyon.conf
-    - name: Fermyon | Create Unit file
-      template: src=fermyon.service.j2 dest=/lib/systemd/system/fermyon.service mode=644
-      notify:
-        - fermyon.restart
-    - name: Fermyon | Start Fermyon
-      service: name=fermyon.service state=started enabled=yes
+    - name: Generate start,sh
+      ansible.builtin.template:
+        src: start.sh.j2
+        dest: ~/start.sh
+        mode: '0744'
+    - name: Print the gateway for each host when defined
+      ansible.builtin.debug:
+        msg: All components installed . Start Ferymon instance using ~/start.sh
