@@ -5,8 +5,7 @@ After=syslog.target network.target
 
 [Service]
 Type=forking
-ExecStartPre=-/bin/rm -f /run/consul/consul.pidExecStart={{consul_home}}/start.sh  
-#ExecStartPre={{consul_home}}/start.sh
+ExecStart={{consul_home}}/start.sh
 User=consul
 EnvironmentFile={{ consul_home }}/consul.env
 PIDFile=/run/consul/consul.pid
