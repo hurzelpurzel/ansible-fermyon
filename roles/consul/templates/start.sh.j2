@@ -57,7 +57,7 @@ echo "Starting consul..."
 consul agent -dev \
   -config-file ./etc/consul.hcl \
   -bootstrap-expect 1 \
-  -pid-file=/run/consul.pid \
+  -pid-file=./consul.pid \
   &>log/consul.log &
 
 echo "Waiting for consul..."
