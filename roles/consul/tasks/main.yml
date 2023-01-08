@@ -28,7 +28,6 @@
         owner: consul
         recurse: true
         state: directory
-
 - name: Create etc dir
   ansible.builtin.file:
         path: "{{ consul_home }}/etc"
@@ -42,10 +41,15 @@
         recurse: true
         state: directory
 - name: consul | Create config file
-  template: "src=consul.hcl.j2 dest={{ consul_home }}/etc/consul.hcl"
+  ansible.builtin.template:
+        src: consul.hcl.j2 
+        dest: "{{ consul_home }}/etc/consul.hcl"
+        owner: consul
 - name: consul | Create start file
-  template: "src=start.sh.j2 dest={{ consul_home }}/start.sh"
-  owner: consul
+  ansible.builtin.template:
+        src: start.sh.j2 
+        dest: "{{ consul_home }}/start.sh"
+        owner: consul
 - name: Make file exeutable
   ansible.builtin.file:
         path: "{{ consul_home }}/start.sh"
