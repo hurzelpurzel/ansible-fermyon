@@ -57,10 +57,11 @@ echo "Starting consul..."
 consul agent -dev \
   -config-file ./etc/consul.hcl \
   -bootstrap-expect 1 \
+  -pid-file=/run/consul/consul.pid
   &>log/consul.log &
 
 echo "Waiting for consul..."
 while ! consul members &>/dev/null; do
   sleep 10
 done
-wait
+

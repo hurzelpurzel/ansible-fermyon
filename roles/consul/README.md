@@ -2,6 +2,7 @@ Role Name
 =========
 
 A brief description of the role goes here.
+https://medium.com/@wenhuanglin/tutorial-on-running-nomad-and-consul-as-a-systemd-daemon-service-part-2-d1b999c73bdd
 
 Requirements
 ------------
