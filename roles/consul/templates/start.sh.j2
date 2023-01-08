@@ -51,13 +51,13 @@ trap cleanup EXIT
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #${SUDO} rm -rf {{consul_home}}/data
-mkdir -p log
+mkdir -p {{consul_home}}/log
 
 echo "Starting consul..."
 consul agent -dev \
   -config-file {{consul_home}}/etc/consul.hcl \
   -bootstrap-expect 1 \
-  &>log/consul.log &
+  &>{{consul_home}}/log/consul.log &
 
 echo "Waiting for consul..."
 while ! consul members &>/dev/null; do
