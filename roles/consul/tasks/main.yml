@@ -58,7 +58,7 @@
 
 # create as service
 - name: consul | Create environment file
-  aansible.builtin.template: 
+  ansible.builtin.template: 
       src: consul.env.j2 
       dest: "{{ consul_home }}/consul.env"
       owner: consul
