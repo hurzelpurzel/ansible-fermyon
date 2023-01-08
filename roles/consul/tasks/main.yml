@@ -16,6 +16,23 @@
   ansible.builtin.apt:
     name: consul
     update_cache: yes
+- name: Ensure group "admin" exists
+  ansible.builtin.group:
+        name: admin
+        state: present
+- name: Add the user 'fermyon' with a specific uid and a primary group of 'admin'
+  ansible.builtin.user:
+        name: consul
+        comment: consul
+        group: admin
+        system: true
+        home: "{{ consul_home }}"
+- name: Ensuring that admin group is able to use sudo without password
+  lineinfile:
+        path: /etc/sudoers
+        regexp: '^%admin'
+        line: '%admin ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
 - name: Create a directory if it does not exist
   ansible.builtin.file:
         path: "{{ consul_home }}"
