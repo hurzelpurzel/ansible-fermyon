@@ -3,4 +3,7 @@
   become_user: root
 
   roles:
+   - nomad
+   - consul
+   - spin
    - fermyon

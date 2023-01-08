@@ -1,0 +1,25 @@
+---
+# tasks file for spin
+# Install spin
+- name: Install spin
+  block:
+    - name: Install a list of packages
+      ansible.builtin.apt:
+        pkg:
+        - build-essential 
+        - libssl-dev 
+        - pkg-config
+        - curl
+    - name: Donwload Spin
+      ansible.builtin.get_url:
+        url: https://developer.fermyon.com/downloads/install.sh
+        dest: /tmp/
+        mode: "744"
+    - name: Execute Installer
+      ansible.builtin.shell: /tmp/install.sh
+      args:
+        chdir: /tmp/
+    - name: mv spin
+      ansible.builtin.shell: 
+        cmd: mv /tmp/spin /usr/local/bin/
+        chdir: /tmp/
